@@ -1,7 +1,33 @@
-const express = require("express");
-const app = express();
-const port = process.env.PORT || 300;
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { connectDB } from "./config/db.js";
+import foodRouter from "./routes/foodRoute.js";
+dotenv.config();
 
+//app config
+const app = express();
+const port = process.env.PORT || 4000;
+
+//app middleware
+app.use(express.json());
+//whenever request from frontend to backend it will be pasrsed by json. check.
+app.use(cors());
+
+//db connection
+connectDB();
+
+//api endpoints
+// app.use("/api/food", foodRouter);
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send({
+    output: "api working",
+  });
 });
+
+//run express server
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});
+
+//mongodb+srv://gutgutiaritika:FoodDelivery@cluster0.ebofvqn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
