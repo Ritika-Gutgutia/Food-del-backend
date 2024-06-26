@@ -18,7 +18,8 @@ app.use(cors());
 connectDB();
 
 //api endpoints
-// app.use("/api/food", foodRouter);
+app.use("/api/food", foodRouter);
+app.use("/uploads", express.static("uploads"));
 app.get("/", (req, res) => {
   res.send({
     output: "api working",
