@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import transporter from "../config/mailer.js";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
 dotenv.config();
 
 // import userModel from "../models/userModel.js";
@@ -13,7 +16,7 @@ dotenv.config();
 //logic for registering user
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-
+  console.log(name, email, password);
   const user = await userModel.findOne({ email });
   if (user) {
     return res.status(400).send("User already exists");
@@ -45,23 +48,74 @@ const registerUser = async (req, res) => {
   });
 
   await newUser.save();
+  // const transporter = nodemailer.createTransport({
+  //   service: "gmail",
+  //   auth: {
+  //     user: process.env.EMAIL_USER,
+  //     pass: process.user.EMAIL_PASS,
+  //   },
+  // });
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Email Verification",
-    texr: `Your OTP code is %{otp}. It will expire in 15 minutes.`,
-  };
+  // const mailOptions = {
+  //   from: process.env.EMAIL_USER,
+  //   to: email,
+  //   subject: "Email Verification",
+  //   text: `Your OTP code is %{otp}. It will expire in 15 minutes.`,
+  // };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      return res.status(500).send("Error sending mail");
-    }
-    res
-      .status(200)
-      .send("Registration successful. Please check your email for the OTP");
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.log(error);
+  //     return res.status(500).send("Error sending mail");
+  //   }
+  //   res
+  //     .status(200)
+  //     .send("Registration successful. Please check your email for the OTP");
+  // });
+
+  const OAuth2 = google.auth.OAuth2;
+
+  const oauth2Client = new OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    "https://developers.google.com/oauthplayground"
+  );
+
+  oauth2Client.setCredentials({
+    refresh_token: process.env.REFRESH_TOKEN,
   });
+
+  async function sendEmail() {
+    try {
+      const accessToken = await oauth2Client.getAccessToken();
+      if (!accessToken.token) {
+        throw new Error("Failed to retrieve access token");
+      }
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          type: "OAuth2",
+          user: process.env.EMAIL_USERNAME,
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+          accessToken: accessToken.token,
+        },
+      });
+
+      let mailOptions = {
+        from: process.env.EMAIL_USERNAME,
+        to: email,
+        subject: "Email Verification",
+        text: `Your OTP code is %{otp}. It will expire in 15 minutes.`,
+      };
+
+      let info = await transporter.sendMail(mailOptions);
+      console.log("Email sent : " + info.response);
+    } catch (error) {
+      console.error("Error sending mail", error.message);
+    }
+  }
 };
 
 //logic for verifying user
