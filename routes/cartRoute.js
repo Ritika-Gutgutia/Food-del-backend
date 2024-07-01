@@ -1,5 +1,4 @@
 import express from "express";
-import cartModel from "../models/cartModel.js";
 import authMiddleware from "../middleware/auth.js";
 
 import {

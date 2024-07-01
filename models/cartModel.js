@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
-const cartSchema = new mongoose.Schema({});
+// const cartSchema = new mongoose.Schema({});
 
-const cartModel = mongoose.models.cart || mongoose.model("cart", cartSchema);
+// const cartModel = mongoose.models.cart || mongoose.model("cart", cartSchema);
 
-export default cartModel;
+// export default cartModel;

@@ -1,4 +1,3 @@
-import cartModel from "../models/cartModel.js";
 import userModel from "../models/userModel.js";
 
 //add to cart api
@@ -24,7 +23,24 @@ const addToCart = async (req, res) => {
 };
 
 //get cart api
-const getFromCart = async (req, res) => {};
+const getFromCart = async (req, res) => {
+  try {
+    const userData = await userModel.findOne({ _id: req.body.userId });
+    const cartData = await userData.cartData;
+
+    res.send({
+      success: true,
+      cartData,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.json({
+      success: false,
+      userMessage: `Error in fetching cart -> ${error}`,
+    });
+  }
+};
 
 //remove from cart
 
