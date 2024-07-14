@@ -24,6 +24,11 @@ const placeOrder = async (req, res) => {
     });
 
     // creating payment link using stripe
+    let deliveryCharge = 80;
+
+    if (newOrder.amount === 0) {
+      deliveryCharge = 0;
+    }
 
     const line_items = req.body.items.map((item) => ({
       price_data: {
@@ -31,7 +36,7 @@ const placeOrder = async (req, res) => {
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100 * 80,
+        unit_amount: item.price * 100,
       },
 
       quantity: item.quantity,
@@ -43,7 +48,7 @@ const placeOrder = async (req, res) => {
         product_data: {
           name: "Delivery charges",
         },
-        unit_amount: 0.4 * 100 * 80,
+        unit_amount: deliveryCharge * 100,
       },
 
       quantity: 1,
@@ -67,7 +72,7 @@ const placeOrder = async (req, res) => {
 
 const verifyOrder = async (req, res) => {
   try {
-    const { orderId, success } = req.body();
+    const { success, orderId } = req.body();
 
     if (success === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });

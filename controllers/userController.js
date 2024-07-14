@@ -114,7 +114,7 @@ import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
 
 //   res.status(200).send({
 //     s: true,
-//     usermessage: "user registered",
+//      message: "user registered",
 //   });
 // };
 
@@ -148,7 +148,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.send({
         success: false,
-        userMessage: `User with email ${email} does not exist`,
+        message: `User with email ${email} does not exist`,
       });
     }
 
@@ -170,7 +170,7 @@ const loginUser = async (req, res) => {
   } catch (error) {
     return res.json({
       success: false,
-      userMessage: "Unable to log in",
+      message: "Unable to log in",
     });
   }
 };
@@ -188,7 +188,7 @@ const registerUser = async (req, res) => {
     const exists = await userModel.findOne({ email });
 
     if (exists) {
-      return res.json({ success: false, userMessage: "User already exists" });
+      return res.json({ success: false, message: "User already exists" });
     }
 
     //validating email format and password
@@ -196,14 +196,14 @@ const registerUser = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.json({
         success: false,
-        userMessage: "Please enter a valid email",
+        message: "Please enter a valid email",
       });
     }
 
     if (password.length < 8) {
       return res.send({
         success: false,
-        userMessage: "Please enter a strong password",
+        message: "Please enter a strong password",
       });
     }
 
@@ -227,7 +227,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, userMessage: "Error in registering" });
+    res.json({ success: false, message: "Error in registering" });
   }
 };
 
