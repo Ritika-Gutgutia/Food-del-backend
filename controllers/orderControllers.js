@@ -61,7 +61,7 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
     });
 
-    res.json({ success: true, session_url: session.url });
+    res.json({ success: "true", session_url: session.url });
   } catch (error) {
     res.json({
       success: "false",
@@ -92,19 +92,19 @@ const verifyOrder = async (req, res) => {
 
 const userOrders = async (req, res) => {
   try {
-    const userOrder = await orderModel.findById(req.body.userId);
+    // const userOrder = await orderModel.findById(req.body.userId);
 
-    if (!userOrder) {
-      return res.json({
-        userMessage: "No orders found",
-      });
-    }
+    // if (!userOrder) {
+    //   return res.json({
+    //     userMessage: "No orders found",
+    //   });
+    // }
 
-    const orderItems = await userOrder.items;
-
+    // const orderItems = await userOrder.items;
+    const orders = await orderModel.find({ userId: req.body.userId });
     res.send({
       success: "true",
-      orderItems,
+      data: orders,
     });
   } catch (error) {
     console.log(error);
