@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // creating an instanc
 //placing user orders from frontend
 
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "http://localhost:5174";
 
   try {
     const newOrder = new orderModel({
@@ -121,16 +121,18 @@ const userOrders = async (req, res) => {
 const listOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({});
-    if (orders.size > 0) {
-      return res.send({
-        success: "true",
-        data: orders,
-      });
-    } else {
-      return res.send({
-        adminMessage: "No orders",
-      });
-    }
+    // if (orders.size > 0) {
+    return res.send({
+      success: "true",
+      data: orders,
+    });
+
+    // } else {
+    //   return res.send({
+    //     success: "true",
+    //     adminMessage: "No orders",
+    //   });
+    // }
   } catch (error) {
     console.log(error);
     res.send({
@@ -140,4 +142,21 @@ const listOrders = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder, userOrders, listOrders };
+// api for updating order status
+
+const updateStatus = async (req, res) => {
+  try {
+    await orderModel.findByIdAndUpdate(req.body.orderId, {
+      status: req.body.status,
+    });
+    res.json({ success: true, message: "Status updated" });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Error",
+    });
+  }
+};
+
+export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
