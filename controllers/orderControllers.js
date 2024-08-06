@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // creating an instanc
 //placing user orders from frontend
 
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "https://food-del-frontend-v2xh.onrender.com";
 
   try {
     const newOrder = new orderModel({
