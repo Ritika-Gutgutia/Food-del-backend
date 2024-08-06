@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
     cartData: { type: Object, default: {} },
     // isVerified: { type: Boolean, default: false },
-    // otp: { type: String, required: false },
+    otp: { type: String, required: false },
     // otpExpired: { type: Date, required: false },
   },
   { minimize: false }

@@ -1,13 +1,16 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import Stripe from "stripe";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // creating an instance of Stripe Client
 
 //placing user orders from frontend
 
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5174";
+  const frontend_url = "http://localhost:5173";
 
   try {
     const newOrder = new orderModel({
@@ -16,7 +19,7 @@ const placeOrder = async (req, res) => {
       amount: req.body.amount,
       address: req.body.address,
     });
-
+    console.log(newOrder);
     await newOrder.save();
     //because the order is placed hence cartData will be an empty object
     await userModel.findByIdAndUpdate(req.body.userId, {
@@ -54,6 +57,9 @@ const placeOrder = async (req, res) => {
       quantity: 1,
     });
 
+    console.log(line_items, "LINE ITEMS");
+    console.log(frontend_url, "FRONTEND URL");
+
     const session = await stripe.checkout.sessions.create({
       line_items: line_items,
       mode: "payment",
@@ -61,13 +67,18 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
     });
 
+    console.log(session.url, "SESSION URL");
     res.json({ success: "true", session_url: session.url });
   } catch (error) {
     res.json({
       success: "false",
       userMessage: "Unable to place an order",
     });
+
+    console.log("ERRRO", error);
   }
+
+  console.log("HELLOO");
 };
 
 const verifyOrder = async (req, res) => {

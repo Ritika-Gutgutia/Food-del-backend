@@ -6,6 +6,7 @@ import {
   getFromCart,
   removeFromCart,
 } from "../controllers/cartController.js";
+
 const cartRouter = express.Router();
 
 cartRouter.post("/add", authMiddleware, addToCart);
