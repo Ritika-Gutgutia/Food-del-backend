@@ -25,8 +25,8 @@ const loginUser = async (req, res) => {
     console.log(password, user.password);
     if (!isMatch) {
       return res.json({
-        success: "false",
-        usserMessage: "Invalid credentials",
+        success: false,
+        message: "Incorrect password",
       });
     }
 
@@ -101,7 +101,7 @@ const registerUser = async (req, res) => {
 
   try {
     //validating email format and password
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email: email });
 
     if (password.length < 8) {
       return res.send({
@@ -111,7 +111,7 @@ const registerUser = async (req, res) => {
     }
 
     // console.log(user[0].otp);
-    console.log(user);
+    console.log(user.otp);
 
     if (user.otp != otp) {
       await userModel.deleteOne({ email: email });
@@ -134,7 +134,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.json({ success: false, message: "Error in registering" });
+    return res.json({ success: false, message: "Error in registering userr" });
   }
 };
 
