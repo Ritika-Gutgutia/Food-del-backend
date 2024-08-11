@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // creating an instanc
 //placing user orders from frontend
 
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://127.0.0.1:5173/";
+  const frontend_url = "https://food-del-frontend-v2xh.onrender.com";
 
   try {
     const newOrder = new orderModel({
@@ -64,7 +64,7 @@ const placeOrder = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: line_items,
       mode: "payment",
-      success_url: `${frontend_url}myorders`,
+      success_url: `${frontend_url}/myorders`,
       cancel_url: `${frontend_url}`,
     });
 
