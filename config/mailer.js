@@ -11,6 +11,7 @@ const mailSender = async (email, otp) => {
       pass: process.env.EMAIL_PASS,
     },
   });
+
   // // import userModel from "../models/userModel.js";
 
   transporter.sendMail({
