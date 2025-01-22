@@ -42,7 +42,7 @@ const getFromCart = async (req, res) => {
   }
 };
 
-//remove from cart
+// remove from cart
 
 const removeFromCart = async (req, res) => {
   try {

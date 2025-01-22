@@ -4,9 +4,6 @@ import fs from "fs";
 //add food item
 
 const addFood = async (req, res) => {
-  //logic for adding food
-  //store the name of the image
-
   let image_filename = `${req.file.filename}`;
 
   const food = new foodModel({
@@ -21,14 +18,11 @@ const addFood = async (req, res) => {
     res.json({
       success: true,
       message: "Food Added Successfully!",
+      data: food,
     });
-
-    console.log(image_filename);
   } catch (error) {
-    // () => {
     console.log(error);
     res.json({ success: false, message: `Error->${error}` });
-    // };
   }
 };
 

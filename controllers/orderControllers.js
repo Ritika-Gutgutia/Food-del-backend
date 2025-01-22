@@ -58,9 +58,6 @@ const placeOrder = async (req, res) => {
       quantity: 1,
     });
 
-    console.log(line_items, "LINE ITEMS");
-    console.log(frontend_url, "FRONTEND URL");
-
     const session = await stripe.checkout.sessions.create({
       line_items: line_items,
       mode: "payment",
@@ -68,7 +65,6 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}`,
     });
 
-    console.log(session.url, "SESSION URL");
     res.json({ success: "true", session_url: session.url });
   } catch (error) {
     res.json({
@@ -78,8 +74,6 @@ const placeOrder = async (req, res) => {
 
     console.log("ERRRO", error);
   }
-
-  console.log("HELLOO");
 };
 
 const verifyOrder = async (req, res) => {
@@ -104,15 +98,6 @@ const verifyOrder = async (req, res) => {
 
 const userOrders = async (req, res) => {
   try {
-    // const userOrder = await orderModel.findById(req.body.userId);
-
-    // if (!userOrder) {
-    //   return res.json({
-    //     userMessage: "No orders found",
-    //   });
-    // }
-
-    // const orderItems = await userOrder.items;
     const orders = await orderModel.find({ userId: req.body.userId });
     res.send({
       success: "true",
@@ -133,18 +118,10 @@ const userOrders = async (req, res) => {
 const listOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({});
-    // if (orders.size > 0) {
     return res.send({
       success: "true",
       data: orders,
     });
-
-    // } else {
-    //   return res.send({
-    //     success: "true",
-    //     adminMessage: "No orders",
-    //   });
-    // }
   } catch (error) {
     console.log(error);
     res.send({
@@ -170,4 +147,5 @@ const updateStatus = async (req, res) => {
     });
   }
 };
+
 export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
